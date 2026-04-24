@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Pulse of Hope Admin</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('load', () => {
+            injectNav();
+            injectStyles();
+        });
+    </script>
+</head>
+<body data-page="system-settings">
+    <div class="admin-page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="admin.html" class="back-btn">← Back to Dashboard</a>
+            <h1>⚙️ System Settings</h1>
+            <p>System configuration, connection status, and health monitoring</p>
+        </div>
+
+        <!-- System Health Cards -->
+        <div class="health-grid">
+            <!-- Supabase Connection Status -->
+            <div class="health-card">
+                <h3>🗄️ Supabase Connection</h3>
+                <div class="health-item">
+                    <span class="label">Connection Status</span>
+                    <span class="value" id="supabaseStatus">Checking...</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Server URL</span>
+                    <span class="value" style="font-size: 0.8em; word-break: break-all;">https://zqsehpfbmoapuygdqjai.supabase.co</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Connection Type</span>
+                    <span class="value">REST API</span>
+                </div>
+            </div>
+
+            <!-- OCR API Status -->
+            <div class="health-card">
+                <h3>📷 OCR Service</h3>
+                <div class="health-item">
+                    <span class="label">OCR Endpoint</span>
+                    <span class="value" id="ocrStatus">Checking...</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Server URL</span>
+                    <span class="value" style="font-size: 0.8em;">http://localhost:5000</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Supported Documents</span>
+                    <span class="value">Aadhar, Medical</span>
+                </div>
+            </div>
+
+            <!-- Database Statistics -->
+            <div class="health-card">
+                <h3>📊 Database Statistics</h3>
+                <div class="health-item">
+                    <span class="label">Active Tables</span>
+                    <span class="value" id="totalTables">Loading...</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Donors Auth Records</span>
+                    <span class="value" id="donorsCountSetting">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Patients Auth Records</span>
+                    <span class="value" id="patientsCountSetting">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Doctors Auth Records</span>
+                    <span class="value" id="doctorsCountSetting">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Hospitals Records</span>
+                    <span class="value" id="hospitalsCountSetting">--</span>
+                </div>
+            </div>
+
+            <!-- System Activity -->
+            <div class="health-card">
+                <h3>🕐 Activity Log</h3>
+                <div class="health-item">
+                    <span class="label">Last Login</span>
+                    <span class="value" id="lastLoginTime">Loading...</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">System Uptime</span>
+                    <span class="value success">99.8%</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Last Backup</span>
+                    <span class="value">Today, 12:00 AM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Health Summary -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>💾 Database Health Summary</h2>
+                <button class="btn btn-outline btn-sm" onclick="loadSystemSettings()">🔄 Refresh</button>
+            </div>
+            <div style="padding: 25px;">
+                <div class="health-item">
+                    <span class="label">Overall Database Status</span>
+                    <span class="value" id="dbHealthStatus">Checking...</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Total Records Across Tables</span>
+                    <span class="value" id="totalRecords">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Storage Used</span>
+                    <span class="value">~2.4 GB</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">API Rate Limit</span>
+                    <span class="value success">Within limits</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Configuration -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>🔧 System Configuration</h2>
+            </div>
+            <div style="padding: 25px;">
+                <div class="health-item">
+                    <span class="label">Application Version</span>
+                    <span class="value">v1.0.0</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Environment</span>
+                    <span class="value">Production</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Debug Mode</span>
+                    <span class="value warning">Disabled</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Maintenance Mode</span>
+                    <span class="value success">Off</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

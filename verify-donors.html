@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Donors - Pulse of Hope Admin</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('load', () => {
+            injectNav();
+            injectStyles();
+        });
+    </script>
+</head>
+<body data-page="verify-donors">
+    <div class="admin-page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="admin.html" class="back-btn">← Back to Dashboard</a>
+            <h1>✅ Donor Verification</h1>
+            <p>Review and verify donor registrations</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="totalDonorsCount">0</div>
+                <div class="stat-label">Total Donors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value">--</div>
+                <div class="stat-label">Verified</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value">--</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>📋 Donor List</h2>
+                <div class="filter-bar">
+                    <input 
+                        type="text" 
+                        id="donorSearch" 
+                        class="search-input" 
+                        placeholder="🔍 Search donors by name..."
+                        onkeyup="if(event.key === 'Enter') searchDonors()"
+                    >
+                    <select id="bloodGroupFilter" class="filter-select" onchange="searchDonors()">
+                        <option value="">All Blood Groups</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="searchDonors()">Search</button>
+                    <button class="btn btn-outline btn-sm" onclick="loadDonors()">🔄 Refresh</button>
+                </div>
+            </div>
+            <div id="donorsTableContainer">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Donor ID</th>
+                            <th>Name</th>
+                            <th>Blood Group</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donorsTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

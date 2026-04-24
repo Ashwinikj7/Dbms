@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Report - Pulse of Hope Admin</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('load', () => {
+            injectNav();
+            injectStyles();
+        });
+    </script>
+</head>
+<body data-page="admin-report">
+    <div class="admin-page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="admin.html" class="back-btn">← Back to Dashboard</a>
+            <h1>📊 System Report</h1>
+            <p>Complete analytics and overview of Pulse of Hope system</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-icon">🩸</div>
+                <div class="stat-value" id="totalDonors">0</div>
+                <div class="stat-label">Total Donors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏥</div>
+                <div class="stat-value" id="totalHospitals">0</div>
+                <div class="stat-label">Total Hospitals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👨‍⚕️</div>
+                <div class="stat-value" id="totalDoctors">0</div>
+                <div class="stat-label">Total Doctors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-value" id="totalPatients">0</div>
+                <div class="stat-label">Total Patients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔐</div>
+                <div class="stat-value" id="totalLogins">0</div>
+                <div class="stat-label">Login Records</div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>📋 Recent System Activity</h2>
+                <button class="btn btn-outline btn-sm" onclick="loadAdminReport()">🔄 Refresh</button>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User Type</th>
+                        <th>User ID</th>
+                        <th>Login Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="loginHistoryBody">
+                    <!-- Data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- System Health Overview -->
+        <div class="health-grid">
+            <div class="health-card">
+                <h3>🌐 System Health</h3>
+                <div class="health-item">
+                    <span class="label">Database Status</span>
+                    <span class="value success">● Online</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">API Response Time</span>
+                    <span class="value success">~200ms</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Uptime</span>
+                    <span class="value success">99.8%</span>
+                </div>
+            </div>
+            <div class="health-card">
+                <h3>📈 Activity Summary</h3>
+                <div class="health-item">
+                    <span class="label">Today's Logins</span>
+                    <span class="value" id="todayLogins">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">New Registrations</span>
+                    <span class="value" id="newRegistrations">--</span>
+                </div>
+                <div class="health-item">
+                    <span class="label">Active Sessions</span>
+                    <span class="value">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

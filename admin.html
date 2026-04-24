@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Pulse of Hope</title>
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('load', () => {
+            injectNav();
+            injectStyles();
+        });
+    </script>
+    <style>
+        /* IDENTICAL DOCTOR PAGE CSS */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1); 
+            min-height: 100vh; padding: 20px; 
+        }
+        .hero { text-align: center; color: white; padding: 50px 20px; }
+        .hero h1 { font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .stats { display: flex; justify-content: center; gap: 40px; margin: 30px 0; flex-wrap: wrap; }
+        .stat { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .stat h2 { font-size: 2.5em; margin: 0; }
+        
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 30px; 
+            max-width: 1400px; 
+            margin: 40px auto; 
+            padding: 0 20px;
+        }
+        .role-card { 
+            background: rgba(255,255,255,0.95); 
+            padding: 35px; 
+            border-radius: 25px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            text-align: center; 
+            transition: all 0.3s; 
+            position: relative; 
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .role-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #ff4757, #ff6b6b);
+        }
+        .role-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
+        .role-icon { font-size: 4em; margin-bottom: 20px; display: block; }
+        
+        .action-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(135deg, #ff4757, #ff6b6b); 
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            margin-top: 20px;
+        }
+        .action-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 25px rgba(255,71,87,0.4); 
+            background: linear-gradient(135deg, #ff3742, #ff5a5a);
+        }
+        .urgent-btn { background: linear-gradient(135deg, #f59e0b, #fbbf24) !important; }
+        .urgent-btn:hover { background: linear-gradient(135deg, #d97706, #f59e0b) !important; }
+        .system-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; }
+        .system-btn:hover { background: linear-gradient(135deg, #2563eb, #1e40af) !important; }
+        
+        .status-card { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 20px; 
+            padding: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
+            margin: 20px auto; 
+            max-width: 1000px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; 
+            border-radius: 50px; font-weight: bold; font-size: 16px; margin: 10px;
+        }
+        .status-critical { background: rgba(239,68,68,0.2); color: #dc2626; border: 2px solid #fecaca; }
+        .status-good { background: rgba(34,197,94,0.2); color: #059669; border: 2px solid #bbf7d0; }
+        .status-warning { background: rgba(245,158,11,0.2); color: #d97706; border: 2px solid #fed7aa; }
+        
+        .system-list {
+            background: rgba(255,255,255,0.95); border-radius: 20px; padding: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); margin: 20px auto; 
+            max-width: 1200px; backdrop-filter: blur(10px);
+        }
+        .system-item {
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px; background: #f8fafc; border-radius: 15px; margin-bottom: 15px;
+            border-left: 5px solid #3b82f6;
+        }
+        
+        @media (max-width: 768px) { 
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section - Admin Version -->
+    <div class="hero">
+        <h1>⚙️ Admin Dashboard</h1>
+      <center> <p>System-wide Pulse of Hope management for NMAMIT Nitte</p></center> 
+
+
+
+      
+        <div class="stats">
+            <div class="stat">
+                <h2>2,418</h2>
+                <p>Total Donors</p>
+            </div>
+            <div class="stat">
+                <h2>23</h2>
+                <p>Hospitals</p>
+            </div>
+            <div class="stat">
+                <h2>156</h2>
+                <p>Active Requests</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Admin Dashboard Grid -->
+    <div class="dashboard-grid">
+        <!-- System Overview -->
+        <div class="role-card">
+            <span class="role-icon">📊</span>
+            <h3>System Overview<br><small>All hospitals & donors</small></h3>
+            <button class="action-btn system-btn" onclick="systemOverview()">📊 Full Report</button>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">98.4% uptime this month</p>
+        </div>
+
+        <!-- Manage Hospitals -->
+        <div class="role-card">
+            <span class="role-icon">🏥</span>
+            <h3>Hospital Management<br><small>Verify & monitor</small></h3>
+            <button class="action-btn" onclick="manageHospitals()">🏥 Manage Hospitals</button>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">23 registered, 15 online</p>
+        </div>
+
+        <!-- Donor Verification -->
+        <div class="role-card">
+            <span class="role-icon">👥</span>
+            <h3>Donor Verification<br><small>Pending registrations</small></h3>
+            <button class="action-btn" onclick="verifyDonors()">✅ Verify Donors</button>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">17 pending, 2,401 verified</p>
+        </div>
+
+        <!-- System Settings -->
+        <div class="role-card">
+            <span class="role-icon">⚙️</span>
+            <h3>System Settings<br><small>Configuration & logs</small></h3>
+            <button class="action-btn system-btn" onclick="systemSettings()">⚙️ System Settings</button>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">Backup & maintenance</p>
+        </div>
+    </div>
+
+    <!-- System Status Cards -->
+    <div class="status-card">
+        <h2 style="margin-bottom: 20px; color: #333;">🌐 System Health Overview</h2>
+        <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+            <div class="status-badge status-good">
+                ✅ All Systems Operational
+                <span style="font-size: 14px;">Uptime: 99.8%</span>
+            </div>
+            <div class="status-badge status-good">
+                ✅ 2,418 Active Donors
+                <span style="font-size: 14px;">+12 today</span>
+            </div>
+            <div class="status-badge status-warning">
+                ⚠️ 3 Critical Requests
+                <span style="font-size: 14px;">O- shortage</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent System Activity -->
+    <div class="system-list">
+        <h2 style="margin-bottom: 20px; color: #333;">📋 Recent System Activity</h2>
+        
+        <div class="system-item">
+            <div>
+                <strong>Nitte Hospital</strong> verified new donor<br>
+                <small>Rahul Shetty (O+) | Mar 16, 12:15 AM</small>
+            </div>
+            <span style="background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px;">Verified</span>
+        </div>
+        
+        <div class="system-item">
+            <div>
+                <strong>KMC Manipal</strong> emergency request<br>
+                <small>Sarah Patel (O+) | 2 units | Critical</small>
+            </div>
+            <span style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px;">Active</span>
+        </div>
+        
+        <div class="system-item">
+            <div>
+                <strong>System Backup</strong> completed<br>
+                <small>Daily database backup | 2.4GB</small>
+            </div>
+            <span style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px;">Complete</span>
+        </div>
+        
+        <div class="system-item">
+            <div>
+                <strong>Father Muller</strong> donor verification<br>
+                <small>Priya Nair (B-) pending approval</small>
+            </div>
+            <span style="background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px;">Approved</span>
+        </div>
+    </div>
+
+    <script>
+        // Navigate to admin report page with live system data
+        function systemOverview() {
+            window.location.href = 'admin-report.html';
+        }
+        
+        // Navigate to hospital management page
+        function manageHospitals() {
+            window.location.href = 'manage-hospitals.html';
+        }
+        
+        // Navigate to donor verification page
+        function verifyDonors() {
+            window.location.href = 'verify-donors.html';
+        }
+        
+        // Navigate to system settings page
+        function systemSettings() {
+            window.location.href = 'system-settings.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pulse of Hope — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root {
+  --red:#dc2626;--red-dark:#b91c1c;
+  --red-pale:#fff1f1;
+  --green:#10b981;--yellow:#f59e0b;
+  --dark:#111827;--gray:#6b7280;--gray2:#9ca3af;
+  --light:#f9fafb;--border:#e5e7eb;--white:#fff;
+  --font:'Nunito',sans-serif;
+  --font-display:'Playfair Display',serif;
+  --shadow:0 4px 24px rgba(0,0,0,0.10);
+  --shadow-red:0 8px 32px rgba(220,38,38,0.18);
+  --r:12px;--r-sm:8px;
+  --t:all 0.2s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--light);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+input,select{font-family:var(--font);font-size:14px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--dark);padding:11px 14px;width:100%;transition:var(--t);outline:none;}
+input:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,0.10);}
+input::placeholder{color:#d1d5db;}
+input.error-field{border-color:var(--red)!important;background:#fff8f8;}
+input.success-field{border-color:var(--green)!important;}
+label{display:block;font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:5px;letter-spacing:0.05em;text-transform:uppercase;}
+.auth-wrap{display:flex;min-height:100vh;}
+.auth-left{width:500px;min-height:100vh;background:var(--red);padding:52px;display:flex;flex-direction:column;position:relative;overflow:hidden;flex-shrink:0;}
+.auth-left::before{content:'';position:absolute;top:-160px;right:-160px;width:480px;height:480px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.auth-left::after{content:'';position:absolute;bottom:-100px;left:-100px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.left-logo{display:flex;align-items:center;gap:12px;margin-bottom:64px;position:relative;z-index:1;}
+.left-logo-icon{width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.left-logo-name{font-family:var(--font-display);font-size:26px;color:#fff;font-weight:700;}
+.left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;}
+.left-headline{font-family:var(--font-display);font-size:54px;line-height:1.05;color:#fff;font-weight:800;margin-bottom:20px;}
+.left-headline span{opacity:0.7;}
+.left-desc{font-size:15px;color:rgba(255,255,255,0.75);line-height:1.8;max-width:340px;margin-bottom:40px;}
+.left-stats{display:flex;gap:32px;}
+.left-stat-val{font-size:30px;font-weight:900;color:#fff;}
+.left-stat-lbl{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+.left-footer{margin-top:auto;padding-top:32px;position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,0.4);}
+.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;overflow-y:auto;}
+.auth-box{width:100%;max-width:460px;}
+.auth-box-title{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.auth-box-sub{font-size:14px;color:var(--gray);margin-bottom:28px;}
+.page-tabs{display:flex;background:#f3f4f6;border-radius:var(--r-sm);padding:4px;margin-bottom:28px;}
+.page-tab{flex:1;padding:9px;border-radius:7px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);color:var(--gray);border:none;background:transparent;font-family:var(--font);}
+.page-tab.active{background:var(--white);color:var(--red);box-shadow:var(--shadow);}
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.role-card{padding:16px 12px;border-radius:var(--r);border:2px solid var(--border);background:var(--white);cursor:pointer;text-align:center;transition:var(--t);}
+.role-card:hover{border-color:var(--red);}
+.role-card.selected{border-color:var(--red);background:var(--red-pale);}
+.role-card-icon{font-size:26px;display:block;margin-bottom:6px;}
+.role-card-label{font-size:13px;font-weight:700;color:var(--dark);}
+.role-card-sub{font-size:11px;color:var(--gray2);margin-top:2px;}
+.role-card.selected .role-card-label{color:var(--red);}
+.form-section{display:none;}
+.form-section.active{display:block;}
+.form-group{margin-bottom:16px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.input-icon{position:relative;}
+.input-icon i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray2);font-size:15px;pointer-events:none;}
+.input-icon input{padding-left:38px;}
+.otp-row{display:flex;gap:8px;}
+.otp-row input{flex:1;}
+.otp-send-btn{white-space:nowrap;padding:11px 16px;background:var(--red-pale);color:var(--red);border:1.5px solid rgba(220,38,38,0.25);border-radius:var(--r-sm);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);flex-shrink:0;}
+.otp-send-btn:hover{background:var(--red);color:#fff;}
+.otp-send-btn:disabled{opacity:0.5;cursor:not-allowed;background:#f3f4f6;color:var(--gray);border-color:var(--border);}
+.aadhar-hint{font-size:11px;color:var(--gray2);margin-top:4px;}
+.aadhar-valid{font-size:11px;color:var(--green);margin-top:4px;font-weight:700;display:none;}
+.aadhar-invalid{font-size:11px;color:var(--red);margin-top:4px;font-weight:700;display:none;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--r-sm);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:var(--t);justify-content:center;width:100%;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:var(--shadow-red);}
+.btn-lg{padding:14px 28px;font-size:15px;border-radius:var(--r);}
+.error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r-sm);padding:10px 14px;font-size:13px;color:#b91c1c;margin-bottom:14px;display:none;align-items:center;gap:8px;}
+.error-box.show{display:flex;}
+.success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--r-sm);padding:10px 14px;font-size:13px;color:#065f46;margin-bottom:14px;display:none;align-items:center;gap:8px;}
+.success-box.show{display:flex;}
+.link-text{font-size:13px;color:var(--gray);text-align:center;margin-top:18px;}
+.link-text a{color:var(--red);font-weight:700;cursor:pointer;}
+.link-text a:hover{text-decoration:underline;}
+.upload-box{border:2px dashed var(--border);border-radius:var(--r-sm);padding:16px;text-align:center;cursor:pointer;transition:var(--t);background:#fafafa;position:relative;}
+.upload-box:hover{border-color:var(--red);background:var(--red-pale);}
+.upload-box input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-box-icon{font-size:24px;margin-bottom:6px;}
+.upload-box-label{font-size:13px;font-weight:700;color:var(--gray);}
+.upload-box-sub{font-size:11px;color:var(--gray2);margin-top:2px;}
+.upload-status{display:none;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:700;margin-top:8px;}
+.upload-status.verifying{background:#fffbeb;border:1px solid #fde68a;color:#92400e;display:flex;}
+.upload-status.verified{background:#f0fdf4;border:1px solid #bbf7d0;color:#065f46;display:flex;}
+.upload-status.failed{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;display:flex;}
+.upload-progress{height:3px;background:#e5e7eb;border-radius:99px;margin-top:6px;overflow:hidden;display:none;}
+.upload-progress-bar{height:100%;background:var(--red);border-radius:99px;width:0;transition:width 0.15s linear;}
+.otp-timer{font-size:12px;color:var(--gray2);margin-top:4px;min-height:16px;}
+/* Donor signup 3-col grid */
+.role-cards-3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:900px){.auth-left{display:none;}.auth-right{padding:24px;}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-left">
+    <div class="left-logo">
+      <div class="left-logo-icon">🩸</div>
+      <div class="left-logo-name">Pulse of Hope</div>
+    </div>
+    <div class="left-hero">
+      <div class="left-headline">Save Lives<br><span>Every</span><br>Second.</div>
+      <div class="left-desc">Intelligently connecting eligible blood donors with hospitals — using medical constraints, donation history, and smart ranking.</div>
+      <div class="left-stats">
+        <div><div class="left-stat-val">2,418</div><div class="left-stat-lbl">Donors</div></div>
+        <div><div class="left-stat-val">183</div><div class="left-stat-lbl">Hospitals</div></div>
+        <div><div class="left-stat-val">98%</div><div class="left-stat-lbl">Fulfilled</div></div>
+      </div>
+    </div>
+    <div class="left-footer">© 2026 Pulse of Hope · NMAMIT Nitte · DBMS Project</div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="page-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- ══════════════════════════════════
+           SIGN IN
+      ══════════════════════════════════ -->
+      <div class="form-section active" id="signinSection">
+        <div class="auth-box-title">Welcome back</div>
+        <div class="auth-box-sub">Choose your role and sign in</div>
+        <div class="role-cards">
+          <div class="role-card selected" onclick="selectSigninRole(this,'doctor')">
+            <span class="role-card-icon">👨‍⚕️</span>
+            <div class="role-card-label">Doctor</div><div class="role-card-sub">Hospital staff</div>
+          </div>
+          <div class="role-card" onclick="selectSigninRole(this,'patient')">
+            <span class="role-card-icon">🧑‍🦽</span>
+            <div class="role-card-label">Patient</div><div class="role-card-sub">Blood recipient</div>
+          </div>
+          <div class="role-card" onclick="selectSigninRole(this,'donor')">
+            <span class="role-card-icon">🩸</span>
+            <div class="role-card-label">Donor</div><div class="role-card-sub">Blood donor</div>
+          </div>
+          <div class="role-card" onclick="selectSigninRole(this,'admin')">
+            <span class="role-card-icon">⚙️</span>
+            <div class="role-card-label">Admin</div><div class="role-card-sub">System admin</div>
+          </div>
+        </div>
+        <div class="error-box" id="signinError"><i class="bi bi-exclamation-circle-fill"></i><span id="signinErrorMsg"></span></div>
+        <div class="success-box" id="signinSuccess"><i class="bi bi-check-circle-fill"></i><span id="signinSuccessMsg"></span></div>
+
+        <!-- Doctor -->
+        <div class="form-section active" id="signin-doctor">
+          <div class="form-group"><label>Doctor / Hospital ID</label>
+            <div class="input-icon"><i class="bi bi-hospital"></i><input type="text" id="d-id" placeholder="e.g. DOC001" value="DOC001"/></div>
+          </div>
+          <div class="form-group"><label>Doctor Licence No *</label>
+            <div class="input-icon"><i class="bi bi-award"></i><input type="text" id="d-licence" placeholder="e.g. KMC-2024-12345"/></div>
+            <div class="aadhar-hint">Your Medical Council licence number</div>
+          </div>
+          <div class="form-group"><label>Upload Licence Document *</label>
+            <div class="upload-box" id="si-doc-upload-box">
+              <input type="file" id="si-d-licence-file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('si-d-licence-file','si-doc-upload-status','si-doc-upload-progress','si-doc-upload-box')"/>
+              <div class="upload-box-icon">📄</div>
+              <div class="upload-box-label">Click to upload licence</div>
+              <div class="upload-box-sub">PDF, JPG or PNG — max 5MB</div>
+            </div>
+            <div class="upload-progress" id="si-doc-upload-progress"><div class="upload-progress-bar" id="si-doc-upload-progress-bar"></div></div>
+            <div class="upload-status" id="si-doc-upload-status"></div>
+          </div>
+          <div class="form-group"><label>Password</label>
+            <div class="input-icon"><i class="bi bi-lock"></i><input type="password" id="d-pass" placeholder="••••••••" value="doctor123"/></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignin('doctor')">Sign In as Doctor →</button>
+        </div>
+
+        <!-- Patient -->
+        <div class="form-section" id="signin-patient">
+          <div class="form-group"><label>Aadhar Card Number</label>
+            <div class="input-icon"><i class="bi bi-credit-card-2-front"></i>
+              <input type="text" id="p-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhar('p-aadhar','p-aadhar-ok','p-aadhar-err')"/>
+            </div>
+            <div class="aadhar-valid" id="p-aadhar-ok">✓ Valid Aadhar number</div>
+            <div class="aadhar-invalid" id="p-aadhar-err">Aadhar must be exactly 12 digits</div>
+          </div>
+          <div class="form-group"><label>Upload Aadhar Card *</label>
+            <div class="upload-box" id="si-p-aadhar-upload-box">
+              <input type="file" id="si-p-aadhar-file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('si-p-aadhar-file','si-p-aadhar-status','si-p-aadhar-progress','si-p-aadhar-upload-box')"/>
+              <div class="upload-box-icon">🪪</div>
+              <div class="upload-box-label">Click to upload Aadhar card</div>
+              <div class="upload-box-sub">PDF, JPG or PNG — max 5MB</div>
+            </div>
+            <div class="upload-progress" id="si-p-aadhar-progress"><div class="upload-progress-bar" id="si-p-aadhar-progress-bar"></div></div>
+            <div class="upload-status" id="si-p-aadhar-status"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Phone *</label>
+              <div class="input-icon"><i class="bi bi-phone"></i><input type="tel" id="p-phone-si" placeholder="9876543210" maxlength="10" oninput="validatePhone('p-phone-si')"/></div>
+            </div>
+            <div class="form-group"><label>Email</label>
+              <div class="input-icon"><i class="bi bi-envelope"></i><input type="email" id="p-email-si" placeholder="meera@email.com"/></div>
+            </div>
+          </div>
+          <div class="form-group"><label>OTP Verification *</label>
+            <div class="otp-row">
+              <input type="text" id="p-otp" placeholder="Enter 6-digit OTP" maxlength="6"/>
+              <button class="otp-send-btn" id="p-otp-btn" onclick="sendOTPPatientSignin()">Send OTP</button>
+            </div>
+            <div class="otp-timer" id="p-otp-timer"></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignin('patient')">Sign In as Patient →</button>
+        </div>
+
+        <!-- Donor -->
+        <div class="form-section" id="signin-donor">
+          <div class="form-group"><label>Aadhar Card Number</label>
+            <div class="input-icon"><i class="bi bi-credit-card-2-front"></i>
+              <input type="text" id="dn-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhar('dn-aadhar','dn-aadhar-ok','dn-aadhar-err')"/>
+            </div>
+            <div class="aadhar-valid" id="dn-aadhar-ok">✓ Valid Aadhar number</div>
+            <div class="aadhar-invalid" id="dn-aadhar-err">Aadhar must be exactly 12 digits</div>
+          </div>
+          <div class="form-group"><label>Upload Aadhar Card *</label>
+            <div class="upload-box" id="si-dn-aadhar-upload-box">
+              <input type="file" id="si-dn-aadhar-file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('si-dn-aadhar-file','si-dn-aadhar-status','si-dn-aadhar-progress','si-dn-aadhar-upload-box')"/>
+              <div class="upload-box-icon">🪪</div>
+              <div class="upload-box-label">Click to upload Aadhar card</div>
+              <div class="upload-box-sub">PDF, JPG or PNG — max 5MB</div>
+            </div>
+            <div class="upload-progress" id="si-dn-aadhar-progress"><div class="upload-progress-bar" id="si-dn-aadhar-progress-bar"></div></div>
+            <div class="upload-status" id="si-dn-aadhar-status"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Phone *</label>
+              <div class="input-icon"><i class="bi bi-phone"></i><input type="tel" id="dn-phone-si" placeholder="9876543210" maxlength="10" oninput="validatePhone('dn-phone-si')"/></div>
+            </div>
+            <div class="form-group"><label>Email</label>
+              <div class="input-icon"><i class="bi bi-envelope"></i><input type="email" id="dn-email-si" placeholder="donor@email.com"/></div>
+            </div>
+          </div>
+          <div class="form-group"><label>Password</label>
+            <div class="input-icon"><i class="bi bi-lock"></i><input type="password" id="dn-pass" placeholder="••••••••" value="donor123"/></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignin('donor')">Sign In as Donor →</button>
+        </div>
+
+        <!-- Admin -->
+        <div class="form-section" id="signin-admin">
+          <div class="form-group"><label>Admin ID</label>
+            <div class="input-icon"><i class="bi bi-person-gear"></i><input type="text" id="a-user" placeholder="e.g. ADMIN001" value="ADMIN001"/></div>
+            <div class="aadhar-hint">Your system-issued Admin ID</div>
+          </div>
+          <div class="form-group"><label>Password</label>
+            <div class="input-icon"><i class="bi bi-lock"></i><input type="password" id="a-pass" placeholder="••••••••" value="admin123"/></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignin('admin')">Sign In as Admin →</button>
+        </div>
+
+        <div class="link-text">Don't have an account? <a onclick="switchAuthTab('signup')">Sign up here</a></div>
+       
+      </div>
+
+      <!-- ══════════════════════════════════
+           SIGN UP
+      ══════════════════════════════════ -->
+      <div class="form-section" id="signupSection">
+        <div class="auth-box-title">Create Account</div>
+        <div class="auth-box-sub">Register to join Pulse of Hope</div>
+
+        <!-- 3-column role selector: Doctor · Patient · Donor -->
+        <div class="role-cards role-cards-3">
+          <div class="role-card selected" onclick="selectSignupRole(this,'doctor')">
+            <span class="role-card-icon">👨‍⚕️</span><div class="role-card-label">Doctor</div><div class="role-card-sub">Hospital staff</div>
+          </div>
+          <div class="role-card" onclick="selectSignupRole(this,'patient')">
+            <span class="role-card-icon">🧑‍🦽</span><div class="role-card-label">Patient</div><div class="role-card-sub">Needs blood</div>
+          </div>
+          <div class="role-card" onclick="selectSignupRole(this,'donor')">
+            <span class="role-card-icon">🩸</span><div class="role-card-label">Donor</div><div class="role-card-sub">Give blood</div>
+          </div>
+        </div>
+
+        <div class="error-box" id="signupError"><i class="bi bi-exclamation-circle-fill"></i><span id="signupErrorMsg"></span></div>
+        <div class="success-box" id="signupSuccess"><i class="bi bi-check-circle-fill"></i><span id="signupSuccessMsg"></span></div>
+
+        <!-- ── Doctor Signup (unchanged) ── -->
+        <div class="form-section active" id="signup-doctor">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input id="sd-name" type="text" placeholder="Dr. Suresh Kumar"/></div>
+            <div class="form-group"><label>Age *</label><input id="sd-age" type="number" placeholder="35" min="18" max="80"/></div>
+          </div>
+          <div class="form-group"><label>Doctor ID *</label>
+            <div class="input-icon"><i class="bi bi-person-badge"></i><input type="text" id="sd-docid" placeholder="e.g. DOC001" oninput="validateDocId()"/></div>
+            <div class="aadhar-valid" id="sd-docid-ok">✓ Valid Doctor ID format</div>
+            <div class="aadhar-invalid" id="sd-docid-err">Must start with DOC followed by digits</div>
+          </div>
+          <div class="form-group"><label>Doctor Licence No *</label>
+            <div class="input-icon"><i class="bi bi-award"></i><input type="text" id="sd-licence" placeholder="e.g. KMC-2024-12345" oninput="validateLicence()"/></div>
+            <div class="aadhar-valid" id="sd-licence-ok">✓ Valid licence number</div>
+            <div class="aadhar-invalid" id="sd-licence-err">Min. 5 characters required</div>
+          </div>
+          <div class="form-group"><label>Upload Licence Document *</label>
+            <div class="upload-box" id="su-doc-upload-box">
+              <input type="file" id="su-d-licence-file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('su-d-licence-file','su-doc-upload-status','su-doc-upload-progress','su-doc-upload-box')"/>
+              <div class="upload-box-icon">📄</div>
+              <div class="upload-box-label">Click to upload licence document</div>
+              <div class="upload-box-sub">PDF, JPG or PNG — max 5MB</div>
+            </div>
+            <div class="upload-progress" id="su-doc-upload-progress"><div class="upload-progress-bar" id="su-doc-upload-progress-bar"></div></div>
+            <div class="upload-status" id="su-doc-upload-status"></div>
+          </div>
+          <div class="form-group"><label>Hospital Name *</label><input id="sd-hospital" type="text" placeholder="KMC Hospital, Manipal"/></div>
+          <div class="form-row">
+            <div class="form-group"><label>Email *</label><input id="sd-email" type="email" placeholder="doctor@hospital.com"/></div>
+            <div class="form-group"><label>Phone *</label><input id="sd-phone" type="tel" placeholder="9876543210" maxlength="10" oninput="validatePhone('sd-phone')"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>City *</label><input id="sd-city" type="text" placeholder="Udupi"/></div>
+            <div class="form-group"><label>Specialisation</label><input id="sd-spec" type="text" placeholder="Haematology"/></div>
+          </div>
+          <div class="form-group"><label>Password *</label>
+            <input id="sd-pass" type="password" placeholder="Min. 8 characters" oninput="validatePassword('sd-pass','sd-pass-strength')"/>
+            <div id="sd-pass-strength" class="aadhar-hint"></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignup('doctor')">Create Doctor Account →</button>
+        </div>
+
+        <!-- ── Patient Signup (unchanged) ── -->
+        <div class="form-section" id="signup-patient">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input id="sp-name" type="text" placeholder="Meera Patel"/></div>
+            <div class="form-group"><label>Age *</label><input id="sp-age" type="number" placeholder="28" min="1" max="120"/></div>
+          </div>
+          <div class="form-group"><label>Aadhar Card Number *</label>
+            <div class="input-icon"><i class="bi bi-credit-card-2-front"></i>
+              <input type="text" id="sp-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhar('sp-aadhar','sp-aadhar-ok','sp-aadhar-err')"/>
+            </div>
+            <div class="aadhar-valid" id="sp-aadhar-ok">✓ Valid Aadhar number</div>
+            <div class="aadhar-invalid" id="sp-aadhar-err">Aadhar must be exactly 12 digits</div>
+          </div>
+          <div class="form-group"><label>Upload Aadhar Card *</label>
+            <div class="upload-box" id="su-p-aadhar-upload-box">
+              <input type="file" id="su-p-aadhar-file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('su-p-aadhar-file','su-p-aadhar-status','su-p-aadhar-progress','su-p-aadhar-upload-box')"/>
+              <div class="upload-box-icon">🪪</div>
+              <div class="upload-box-label">Click to upload Aadhar card</div>
+              <div class="upload-box-sub">PDF, JPG or PNG — max 5MB</div>
+            </div>
+            <div class="upload-progress" id="su-p-aadhar-progress"><div class="upload-progress-bar" id="su-p-aadhar-progress-bar"></div></div>
+            <div class="upload-status" id="su-p-aadhar-status"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input id="sp-email" type="email" placeholder="meera@email.com"/></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" id="sp-phone" placeholder="9876543210" maxlength="10" oninput="validatePhone('sp-phone')"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Blood Group Needed *</label>
+              <select id="sp-blood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Hospital (if admitted)</label><input id="sp-hospital" type="text" placeholder="KMC Hospital, Manipal"/></div>
+          <div class="form-row">
+            <div class="form-group"><label>City *</label><input id="sp-city" type="text" placeholder="Manipal"/></div>
+            <div class="form-group"><label>Urgency *</label>
+              <select id="sp-urgency"><option>Critical</option><option>Urgent</option><option>Medium</option><option>Low</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>OTP Verification *</label>
+            <div class="otp-row">
+              <input type="text" id="sp-otp" placeholder="Enter 6-digit OTP" maxlength="6"/>
+              <button class="otp-send-btn" id="sp-otp-btn" onclick="sendOTPSignup()">Send OTP</button>
+            </div>
+            <div class="otp-timer" id="sp-otp-timer"></div>
+          </div>
+          <button class="btn btn-red btn-lg" onclick="handleSignup('patient')">Create Patient Account →</button>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             ✦  DONOR SIGN UP  — wired to donors_auth
+        ══════════════════════════════════════════ -->
+        <div class="form-section" id="signup-donor">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input id="sdn-full-name" type="text" placeholder="Rahul Shetty"/>
+            </div>
+            <div class="form-group">
+              <label>Age *</label>
+              <input id="sdn-age" type="number" placeholder="24" min="18" max="65"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Aadhar Number *</label>
+            <div class="input-icon">
+              <i class="bi bi-credit-card-2-front"></i>
+              <input type="text" id="sdn-aadhar"
+                     placeholder="XXXX XXXX XXXX" maxlength="14"
+                     oninput="formatAadhar('sdn-aadhar','sdn-aadhar-ok','sdn-aadhar-err')"/>
+            </div>
+            <div class="aadhar-valid"   id="sdn-aadhar-ok">✓ Valid Aadhar number</div>
+            <div class="aadhar-invalid" id="sdn-aadhar-err">Aadhar must be exactly 12 digits</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email *</label>
+              <div class="input-icon">
+                <i class="bi bi-envelope"></i>
+                <input type="email" id="sdn-email" placeholder="rahul@email.com"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Phone *</label>
+              <div class="input-icon">
+                <i class="bi bi-phone"></i>
+                <input type="tel" id="sdn-phone" placeholder="9876543210"
+                       maxlength="10" oninput="validatePhone('sdn-phone')"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Blood Group *</label>
+              <select id="sdn-blood">
+                <option value="">Select</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>City *</label>
+              <input id="sdn-city" type="text" placeholder="Udupi"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password *</label>
+            <div class="input-icon">
+              <i class="bi bi-lock"></i>
+              <input type="password" id="sdn-pass" placeholder="Min. 8 characters"
+                     oninput="validatePassword('sdn-pass','sdn-pass-strength')"/>
+            </div>
+            <div id="sdn-pass-strength" class="aadhar-hint"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <div class="input-icon">
+              <i class="bi bi-lock-fill"></i>
+              <input type="password" id="sdn-pass-confirm" placeholder="Re-enter password"/>
+            </div>
+            <div id="sdn-pass-match" class="aadhar-hint"></div>
+          </div>
+
+          <button class="btn btn-red btn-lg" id="sdn-submit-btn" onclick="handleDonorAuthSignup()">
+            Create Donor Account →
+          </button>
+        </div>
+        <!-- ── end donor signup ── -->
+
+        <div class="link-text">Already registered? <a onclick="switchAuthTab('signin')">Sign in here</a></div>
+      </div>
+      <!-- end signupSection -->
+
+    </div><!-- end auth-box -->
+  </div><!-- end auth-right -->
+</div><!-- end auth-wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ── Supabase client (ES module shim so we can also use it inline) ── -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const supabase = createClient(
+    'https://zqsehpfbmoapuygdqjai.supabase.co',
+    'sb_publishable_hr3AIQbkYesPVNO_4aIrYQ_lMFSSA-T'
+  );
+
+  // Expose to global scope so the non-module scripts can call it
+  window._supabase = supabase;
+
+  /* ────────────────────────────────────────────────
+     handleDonorAuthSignup
+     Inserts into donors_auth table then redirects
+     to home.html on success.
+  ──────────────────────────────────────────────── */
+  window.handleDonorAuthSignup = async function () {
+    const showSignupError = (msg) => {
+      const box = document.getElementById('signupError');
+      document.getElementById('signupErrorMsg').textContent = msg;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 4000);
+    };
+
+    // Collect values
+    const fullName   = document.getElementById('sdn-full-name').value.trim();
+    const age        = parseInt(document.getElementById('sdn-age').value);
+    const aadharRaw  = document.getElementById('sdn-aadhar').value.replace(/\D/g, '');
+    const email      = document.getElementById('sdn-email').value.trim();
+    const phone      = document.getElementById('sdn-phone').value.trim();
+    const bloodGroup = document.getElementById('sdn-blood').value;
+    const city       = document.getElementById('sdn-city').value.trim();
+    const password   = document.getElementById('sdn-pass').value;
+    const confirm    = document.getElementById('sdn-pass-confirm').value;
+
+    // Basic validation
+    if (!fullName || !age || !aadharRaw || !email || !phone || !bloodGroup || !city || !password) {
+      showSignupError('Please fill in all required fields.');
+      return;
+    }
+    if (aadharRaw.length !== 12) {
+      showSignupError('Aadhar number must be exactly 12 digits.');
+      return;
+    }
+    if (age < 18 || age > 65) {
+      showSignupError('Donor age must be between 18 and 65.');
+      return;
+    }
+    if (password.length < 8) {
+      showSignupError('Password must be at least 8 characters.');
+      return;
+    }
+    if (password !== confirm) {
+      showSignupError('Passwords do not match.');
+      return;
+    }
+
+    // Disable button to prevent double-submit
+    const btn = document.getElementById('sdn-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating account…';
+
+    try {
+      const { error } = await window._supabase
+        .from('donors_auth')
+        .insert([{
+          aadhar_number : aadharRaw,
+          full_name     : fullName,
+          age           : age,
+          email         : email || null,
+          phone         : phone,
+          blood_group   : bloodGroup,
+          city          : city,
+          password      : password   // plain text as per existing project pattern
+        }]);
+
+      if (error) throw error;
+
+      // ── Success: show toast then go home ──
+      await Swal.fire({
+        icon             : 'success',
+        title            : 'Welcome to Pulse of Hope! 🩸',
+        text             : `Your donor account has been created, ${fullName}. Thank you for choosing to save lives!`,
+        background       : '#fff',
+        confirmButtonColor: '#dc2626',
+        confirmButtonText : 'Go to Home'
+      });
+
+      window.location.href = 'home.html';
+
+    } catch (err) {
+      console.error('Donor signup error:', err);
+
+      let friendlyMsg = 'Could not create account. Please try again.';
+      if (err.code === '23505') {
+        friendlyMsg = 'This Aadhar number is already registered. Please sign in instead.';
+      } else if (err.message) {
+        friendlyMsg = err.message;
+      }
+
+      showSignupError(friendlyMsg);
+      btn.disabled = false;
+      btn.textContent = 'Create Donor Account →';
+    }
+  };
+</script>
+
+<!-- ── Non-module scripts (auth-backend + rbac stubs + shared UI helpers) ── -->
+<script src="rbac.js" onerror="console.warn('rbac.js not found – skipped')"></script>
+<script type="module" src="auth-backend.js"></script>
+
+<script>
+/* ─────────────────────────────────────────────
+   CLIENT-SIDE FILE VERIFICATION (unchanged)
+───────────────────────────────────────────── */
+const ALLOWED_TYPES = ['image/jpeg','image/jpg','image/png','application/pdf'];
+const MAX_SIZE = 5 * 1024 * 1024;
+
+async function handleFileUpload(inputId, statusId, progressId, boxId) {
+  const input = document.getElementById(inputId);
+  const file = input.files[0];
+  if (!file) return;
+
+  const statusEl   = document.getElementById(statusId);
+  const progressEl = document.getElementById(progressId);
+  const barEl      = document.getElementById(progressId + '-bar');
+  const box        = document.getElementById(boxId);
+
+  uploadVerified[inputId] = false;
+
+  box.querySelector('.upload-box-label').textContent = file.name;
+  box.querySelector('.upload-box-sub').textContent   = 'Reading document…';
+  box.querySelector('.upload-box-icon').textContent  = '📄';
+
+  statusEl.className = 'upload-status verifying';
+  statusEl.innerHTML = '🔍 Extracting text…';
+  statusEl.style.display = 'flex';
+  progressEl.style.display = 'block';
+  barEl.style.width = '10%';
+
+  const reader = new FileReader();
+  reader.onload = async function () {
+    try {
+      const result = await Tesseract.recognize(reader.result, 'eng', {
+        logger: m => { if (m.progress) barEl.style.width = (10 + m.progress * 80) + '%'; }
+      });
+
+      const text   = result.data.text.toLowerCase().replace(/\s+/g, ' ');
+      const digits = text.replace(/\D/g, '');
+      barEl.style.width = '100%';
+
+      const hasReadableText = text.trim().length > 30;
+      const hasEnoughDigits = digits.length >= 8;
+
+      if (inputId.includes('aadhar')) {
+        if (hasReadableText && hasEnoughDigits) {
+          statusEl.className = 'upload-status verified';
+          statusEl.innerHTML = '✅ Document detected (Aadhaar upload accepted)';
+          uploadVerified[inputId] = true;
+        } else {
+          statusEl.className = 'upload-status failed';
+          statusEl.innerHTML = '❌ Could not read Aadhaar properly';
+          uploadVerified[inputId] = false;
+        }
+      } else if (inputId.includes('licence')) {
+        if (hasReadableText) {
+          statusEl.className = 'upload-status verified';
+          statusEl.innerHTML = '✅ Licence document uploaded successfully';
+          uploadVerified[inputId] = true;
+        } else {
+          statusEl.className = 'upload-status failed';
+          statusEl.innerHTML = '❌ Could not read licence properly';
+          uploadVerified[inputId] = false;
+        }
+      } else {
+        statusEl.className = 'upload-status failed';
+        statusEl.innerHTML = '❌ Unsupported document type';
+        uploadVerified[inputId] = false;
+      }
+    } catch (err) {
+      statusEl.className = 'upload-status failed';
+      statusEl.innerHTML = '❌ OCR failed to read document';
+      uploadVerified[inputId] = false;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── APP LOGIC (unchanged) ── */
+let signinRole = 'doctor', signupRole = 'doctor';
+const otpStore = {}, uploadVerified = {};
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.page-tab').forEach((t,i) =>
+    t.classList.toggle('active', tab === 'signin' ? i === 0 : i === 1));
+  document.getElementById('signinSection').classList.toggle('active', tab === 'signin');
+  document.getElementById('signupSection').classList.toggle('active', tab === 'signup');
+  hideAllErrors();
+}
+
+function selectSigninRole(el, role) {
+  document.querySelectorAll('#signinSection .role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  signinRole = role;
+  ['doctor','patient','donor','admin'].forEach(r => {
+    const s = document.getElementById('signin-' + r);
+    if (s) s.classList.toggle('active', r === role);
+  });
+  hideAllErrors();
+}
+
+function selectSignupRole(el, role) {
+  document.querySelectorAll('#signupSection .role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  signupRole = role;
+  ['doctor','patient','donor'].forEach(r => {
+    const s = document.getElementById('signup-' + r);
+    if (s) s.classList.toggle('active', r === role);
+  });
+  hideAllErrors();
+}
+
+function formatAadhar(inputId, okId, errId) {
+  const input = document.getElementById(inputId);
+  let raw = input.value.replace(/\D/g,'');
+  if (raw.length > 12) raw = raw.slice(0, 12);
+  input.value = raw.replace(/(\d{4})(?=\d)/g,'$1 ').trim();
+  const ok = document.getElementById(okId), err = document.getElementById(errId);
+  if (!raw.length) {
+    ok.style.display='none'; err.style.display='none';
+    input.classList.remove('error-field','success-field');
+  } else if (raw.length === 12) {
+    ok.style.display='block'; err.style.display='none';
+    input.classList.remove('error-field'); input.classList.add('success-field');
+  } else {
+    err.style.display='block'; ok.style.display='none';
+    input.classList.add('error-field'); input.classList.remove('success-field');
+  }
+}
+
+function validatePhone(inputId) {
+  const input = document.getElementById(inputId);
+  const raw = input.value.replace(/\D/g,'');
+  input.value = raw;
+  if (raw.length === 10 && /^[6-9]/.test(raw)) {
+    input.classList.remove('error-field'); input.classList.add('success-field');
+  } else if (raw.length > 0) {
+    input.classList.add('error-field'); input.classList.remove('success-field');
+  } else {
+    input.classList.remove('error-field','success-field');
+  }
+}
+
+function validateLicence() {
+  const input = document.getElementById('sd-licence'), val = input.value.trim();
+  const ok = document.getElementById('sd-licence-ok'), err = document.getElementById('sd-licence-err');
+  if (!val.length) { ok.style.display='none'; err.style.display='none'; input.classList.remove('error-field','success-field'); return; }
+  if (val.length >= 5) { ok.style.display='block'; err.style.display='none'; input.classList.remove('error-field'); input.classList.add('success-field'); }
+  else { err.style.display='block'; ok.style.display='none'; input.classList.add('error-field'); input.classList.remove('success-field'); }
+}
+
+function validateDocId() {
+  const input = document.getElementById('sd-docid'), val = input.value.trim().toUpperCase();
+  input.value = val;
+  const ok = document.getElementById('sd-docid-ok'), err = document.getElementById('sd-docid-err');
+  if (!val.length) { ok.style.display='none'; err.style.display='none'; input.classList.remove('error-field','success-field'); return; }
+  if (/^DOC\d+$/.test(val)) { ok.style.display='block'; err.style.display='none'; input.classList.remove('error-field'); input.classList.add('success-field'); }
+  else { err.style.display='block'; ok.style.display='none'; input.classList.add('error-field'); input.classList.remove('success-field'); }
+}
+
+function validatePassword(inputId, strengthId) {
+  const val = document.getElementById(inputId).value;
+  const el  = document.getElementById(strengthId);
+  if (!val.length) { el.textContent=''; el.style.color=''; return; }
+  if (val.length < 6)  { el.textContent='⚠ Too short — use at least 8 characters'; el.style.color='var(--red)'; }
+  else if (val.length < 8) { el.textContent='Fair — add more characters'; el.style.color='var(--yellow)'; }
+  else if (/[A-Z]/.test(val) && /[0-9]/.test(val)) { el.textContent='✓ Strong password'; el.style.color='var(--green)'; }
+  else { el.textContent='Good — add uppercase & numbers for stronger password'; el.style.color='var(--yellow)'; }
+
+  // Live confirm-match hint for donor form
+  const confirmInput = document.getElementById('sdn-pass-confirm');
+  if (confirmInput && confirmInput.value) checkPasswordMatch();
+}
+
+function checkPasswordMatch() {
+  const pass    = document.getElementById('sdn-pass')?.value;
+  const confirm = document.getElementById('sdn-pass-confirm')?.value;
+  const hint    = document.getElementById('sdn-pass-match');
+  if (!hint || !confirm) return;
+  if (pass === confirm) { hint.textContent='✓ Passwords match'; hint.style.color='var(--green)'; }
+  else                  { hint.textContent='✗ Passwords do not match'; hint.style.color='var(--red)'; }
+}
+
+// Wire confirm-password live check
+document.getElementById('sdn-pass-confirm')?.addEventListener('input', checkPasswordMatch);
+
+function generateOTP() { return Math.floor(100000 + Math.random() * 900000).toString(); }
+function startCountdown(timerId, btnId, seconds) {
+  const timerEl = document.getElementById(timerId);
+  let remaining = seconds;
+  const interval = setInterval(() => {
+    remaining--;
+    timerEl.textContent = `Resend OTP in ${remaining}s`;
+    if (remaining <= 0) { clearInterval(interval); timerEl.textContent=''; document.getElementById(btnId).disabled=false; }
+  }, 1000);
+}
+
+function hideAllErrors() {
+  ['signinError','signinSuccess','signupError','signupSuccess'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+}
+
+// Quick-link from sign-in page → donor signup
+function switchToDonorSignup() {
+  switchAuthTab('signup');
+  const donorCard = document.querySelector('#signupSection .role-card[onclick*="donor"]');
+  if (donorCard) selectSignupRole(donorCard, 'donor');
+}
+
+// Stub — auth-backend.js may redefine these
+window.handleSignin  = window.handleSignin  || function(role) { console.warn('handleSignin not loaded yet'); };
+window.handleSignup  = window.handleSignup  || function(role) { console.warn('handleSignup not loaded yet'); };
+window.sendOTPPatientSignin = window.sendOTPPatientSignin || function() {};
+window.sendOTPSignup        = window.sendOTPSignup        || function() {};
+</script>
+</body>
+</html>

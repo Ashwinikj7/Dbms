@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Hospitals - Pulse of Hope Admin</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('load', () => {
+            injectNav();
+            injectStyles();
+        });
+    </script>
+</head>
+<body data-page="manage-hospitals">
+    <div class="admin-page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <a href="admin.html" class="back-btn">← Back to Dashboard</a>
+            <h1>🏥 Hospital Management</h1>
+            <p>View, search, and manage all registered hospitals</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏥</div>
+                <div class="stat-value" id="totalHospitalsCount">0</div>
+                <div class="stat-label">Total Hospitals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value">--</div>
+                <div class="stat-label">Verified</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value">--</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- Hospitals Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>📋 Hospital List</h2>
+                <div class="filter-bar">
+                    <input 
+                        type="text" 
+                        id="hospitalSearch" 
+                        class="search-input" 
+                        placeholder="🔍 Search hospitals by name..."
+                        onkeyup="if(event.key === 'Enter') searchHospitals()"
+                    >
+                    <button class="btn btn-primary btn-sm" onclick="searchHospitals()">Search</button>
+                    <button class="btn btn-outline btn-sm" onclick="loadHospitals()">🔄 Refresh</button>
+                </div>
+            </div>
+            <div id="hospitalsTableContainer">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Hospital ID</th>
+                            <th>Hospital Name</th>
+                            <th>City</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Stored Units</th>
+                            <th>Needed Units</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hospitalsTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <h3>Confirm Action</h3>
+            <p class="modal-message">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline btn-cancel">Cancel</button>
+                <button class="btn btn-danger btn-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

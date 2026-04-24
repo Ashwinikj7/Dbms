@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pulse of Hope — Donors</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="nav.js"></script>
+<style>
+.donor-tabs{display:flex;background:#f3f4f6;border-radius:var(--r-sm);padding:4px;margin-bottom:32px;max-width:400px;}
+.donor-tab{flex:1;padding:9px;border-radius:7px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);color:var(--gray);border:none;background:transparent;font-family:var(--font);}
+.donor-tab.active{background:var(--white);color:var(--red);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+.donor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.donor-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px;transition:var(--t);}
+.donor-card:hover{box-shadow:var(--shadow);border-color:rgba(220,38,38,0.2);transform:translateY(-2px);}
+.donor-avatar{width:48px;height:48px;border-radius:50%;background:var(--red-pale);border:2px solid rgba(220,38,38,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--red);flex-shrink:0;}
+.blood-pill{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:var(--red-pale);border:1px solid rgba(220,38,38,0.18);font-size:11px;font-weight:800;color:var(--red);}
+.score-bar{height:6px;background:#f3f4f6;border-radius:99px;overflow:hidden;margin-top:8px;}
+.score-fill{height:100%;border-radius:99px;background:var(--green);}
+.reg-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;max-width:720px;margin:0 auto;}
+.reg-header{background:var(--green);color:#fff;padding:22px 32px;display:flex;align-items:center;gap:12px;}
+.reg-body{padding:32px;}
+.step-bar{display:flex;gap:0;margin-bottom:32px;}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
+.step::after{content:'';position:absolute;top:15px;left:50%;right:-50%;height:1px;background:var(--border);z-index:0;}
+.step:last-child::after{display:none;}
+.step-num{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--white);position:relative;z-index:1;transition:var(--t);color:var(--gray);}
+.step.done .step-num{background:var(--green);border-color:var(--green);color:#fff;}
+.step.active .step-num{border-color:var(--red);color:var(--red);}
+.step-lbl{font-size:10px;color:var(--gray);margin-top:5px;text-align:center;}
+.step.active .step-lbl{color:var(--dark);font-weight:700;}
+.filter-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:24px;}
+.filter-row .form-group{margin:0;min-width:140px;flex:1;}
+</style>
+<!-- ADD NAVIGATION - PASTE HERE -->
+<script src="nav.js"></script>
+<script>
+window.addEventListener('load', function() {
+    injectNav();
+    injectStyles();
+});
+</script>
+<script type="module" src="supabase.js"></script>
+<script src="rbac.js"></script>
+<!-- END NAVIGATION -->
+
+</head>
+<body>
+
+
+<div class="hero" style="padding-top:128px;">
+  <div class="hero-inner">
+    <h1>🩸 Donor Portal</h1>
+    <p>Search existing donors or register yourself — every donation saves up to 3 lives.</p>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-top:40px;">
+
+  <div class="donor-tabs">
+    <button class="donor-tab active" onclick="switchTab(0)">Search Donors</button>
+    <button class="donor-tab" onclick="switchTab(1)" data-requires-access="canRegisterAsDonor">Register</button>
+  </div>
+
+  <!-- TAB 1: SEARCH -->
+  <div class="tab-panel active" id="tab0">
+    <div class="filter-row">
+      <div class="form-group"><label>Search by Name</label><input type="text" id="dSearch" placeholder="Type name…" oninput="filterDonors()"/></div>
+      <div class="form-group" style="min-width:120px;flex:0.5;"><label>Blood Group</label>
+        <select id="dBlood" onchange="filterDonors()">
+          <option value="">All</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+        </select>
+      </div>
+      <div class="form-group" style="min-width:120px;flex:0.5;"><label>City</label><input type="text" id="dCity" placeholder="e.g. Udupi" oninput="filterDonors()"/></div>
+      <div class="form-group" style="min-width:120px;flex:0.4;">
+        <label>Available</label>
+        <select id="dAvail" onchange="filterDonors()">
+          <option value="">All</option><option value="1">Available</option><option value="0">Unavailable</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="clearDFilters()" style="align-self:flex-end;height:42px;">Clear</button>
+    </div>
+
+    <div style="font-size:13px;color:var(--gray);margin-bottom:16px;" id="donorCount">Loading donors...</div>
+    <div class="donor-grid" id="donorGrid"></div>
+  </div>
+
+  <!-- TAB 2: REGISTER -->
+  <div class="tab-panel" id="tab1" data-requires-access="canRegisterAsDonor">
+    <div class="reg-card">
+      <div class="reg-header">
+        <i class="bi bi-heart-pulse-fill" style="font-size:24px;"></i>
+        <div>
+          <div style="font-size:16px;font-weight:800;">Register as Blood Donor</div>
+          <div style="font-size:13px;opacity:0.8;">Takes 2 minutes — saves 3 lives</div>
+        </div>
+      </div>
+      <div class="reg-body">
+        <!-- Steps -->
+        <div class="step-bar">
+          <div class="step done" id="rs1"><div class="step-num">✓</div><div class="step-lbl">Personal</div></div>
+          <div class="step active" id="rs2"><div class="step-num">2</div><div class="step-lbl">Medical</div></div>
+          <div class="step" id="rs3"><div class="step-num">3</div><div class="step-lbl">Confirm</div></div>
+        </div>
+
+        <!-- Panel 1 -->
+        <div id="rp1" style="display:none;">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input id="r_name" type="text" placeholder="Rahul Shetty"/><div class="form-error" id="r_name_error">Please enter your name</div></div>
+            <div class="form-group"><label>Age *</label><input id="r_age" type="number" placeholder="24" min="18" max="65"/><div class="form-error" id="r_age_error">Please enter a valid age (18-65)</div></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input id="r_email" type="email" placeholder="rahul@email.com"/><div class="form-error" id="r_email_error">Email must contain @gmail.com</div></div>
+            <div class="form-group"><label>Phone *</label><input id="r_phone" type="tel" placeholder="9876543210"/><div class="form-error" id="r_phone_error">Phone must be exactly 10 digits</div></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Blood Group *</label>
+              <select id="r_blood">
+                <option value="">Select</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+              </select>
+              <div class="form-error" id="r_blood_error">Please select your blood group</div>
+            </div>
+            <div class="form-group"><label>Aadhar Number *</label><input id="r_aadhar" type="text" placeholder="XXXX XXXX XXXX"/><div class="form-error" id="r_aadhar_error">Aadhar must be exactly 12 digits</div></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Weight (kg) *</label><input id="r_weight" type="number" placeholder="60" min="50"/><div class="form-error" id="r_weight_error">Weight must be at least 50kg</div></div>
+            <div class="form-group"><label>Height (cm)</label><input id="r_height" type="number" placeholder="170"/></div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group"><label>City *</label><input id="r_city" type="text" placeholder="Udupi"/><div class="form-error" id="r_city_error">Please enter your city</div></div>
+            <div class="form-group"><label>State *</label><input id="r_state" type="text" placeholder="Karnataka"/><div class="form-error" id="r_state_error">Please enter your state</div></div>
+            <div class="form-group"><label>Pincode</label><input id="r_pin" type="text" placeholder="576101"/></div>
+          </div>
+          <button class="btn btn-red btn-full btn-lg" onclick="goStep(2)">Next: Medical Info →</button>
+        </div>
+
+        <!-- Panel 2 (active default) -->
+        <div id="rp2">
+          <div class="form-group"><label>Previous Ailments / Conditions</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="ailmentPills">
+              <span class="pill" onclick="togglePill(this)">Diabetes</span>
+              <span class="pill" onclick="togglePill(this)">Hypertension</span>
+              <span class="pill" onclick="togglePill(this)">Asthma</span>
+              <span class="pill" onclick="togglePill(this)">Heart Disease</span>
+              <span class="pill" onclick="togglePill(this)">Anemia</span>
+              <span class="pill" onclick="togglePill(this)">Hepatitis B/C</span>
+              <span class="pill" onclick="togglePill(this)">HIV</span>
+              <span class="pill checked" onclick="togglePill(this)">None</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Known Allergies</label><input id="r_allergy" type="text" placeholder="e.g. Penicillin (or leave blank)"/></div>
+            <div class="form-group"><label>Current Medications</label><input id="r_meds" type="text" placeholder="e.g. Metformin (or leave blank)"/></div>
+          </div>
+          <div class="form-group"><label>Last Donation Date</label><input id="r_lastdon" type="date"/></div>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--r-sm);padding:11px 14px;font-size:13px;color:#1e40af;margin-bottom:18px;">
+            <i class="bi bi-info-circle-fill"></i> Minimum 90 days gap required between donations. Minimum weight: 50kg. Age: 18–65.
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline btn-full" onclick="goStep(1)">← Back</button>
+            <button class="btn btn-red btn-full btn-lg" onclick="goStep(3)">Next: Confirm →</button>
+          </div>
+        </div>
+
+        <!-- Panel 3 -->
+        <div id="rp3" style="display:none;">
+          <div style="background:#f9fafb;border:1.5px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;" id="reviewPanel"></div>
+          
+          <!-- Document Verification Section -->
+         
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline btn-full" onclick="goStep(2)">← Back</button>
+            <button class="btn btn-red btn-full btn-lg" onclick="submitRegister()">✓ Submit Registration</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.pill{padding:6px 14px;border-radius:99px;border:1.5px solid var(--border);font-size:12px;cursor:pointer;transition:var(--t);color:var(--gray);background:var(--white);user-select:none;}
+.pill:hover{border-color:var(--red);}
+.pill.checked{border-color:var(--red);background:var(--red-pale);color:var(--red);font-weight:700;}
+.form-error{color:#dc2626;font-size:11px;margin-top:4px;display:none;font-weight:600;}
+.form-group.error input,.form-group.error select{border-color:#dc2626;background:#fef2f2;}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function switchTab(n) {
+  document.querySelectorAll('.donor-tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+
+// Note: filterDonors() and clearDFilters() are now defined in supabase.js
+// They dynamically query Supabase with the applied filters
+function contactThis(btn,name){
+  btn.textContent='✓ Contacted';btn.className='btn btn-green btn-sm btn-full';btn.disabled=true;
+  Swal.fire({icon:'success',title:'Done!',text:`${name} has been notified.`,timer:1200,showConfirmButton:false,background:'#fff'});
+}
+
+// Validation helper functions
+function showError(fieldId, show) {
+  const errorEl = document.getElementById(fieldId + '_error');
+  const formGroup = errorEl ? errorEl.closest('.form-group') : null;
+  if (errorEl) {
+    errorEl.style.display = show ? 'block' : 'none';
+  }
+  if (formGroup) {
+    formGroup.classList.toggle('error', show);
+  }
+}
+
+function clearAllErrors() {
+  document.querySelectorAll('.form-error').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.form-group').forEach(el => el.classList.remove('error'));
+}
+
+function validateStep1() {
+  let isValid = true;
+  clearAllErrors();
+  
+  // Validate Name
+  const name = document.getElementById('r_name').value.trim();
+  if (!name) {
+    showError('r_name', true);
+    isValid = false;
+  }
+  
+  // Validate Age
+  const age = document.getElementById('r_age').value;
+  if (!age || parseInt(age) < 18 || parseInt(age) > 65) {
+    showError('r_age', true);
+    isValid = false;
+  }
+  
+  // Validate Email (if provided, must contain @gmail.com)
+  const email = document.getElementById('r_email').value.trim();
+  if (email && !email.includes('@gmail.com')) {
+    showError('r_email', true);
+    isValid = false;
+  }
+  
+  // Validate Phone (exactly 10 digits)
+  const phone = document.getElementById('r_phone').value.trim();
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (phoneDigits.length !== 10) {
+    showError('r_phone', true);
+    isValid = false;
+  }
+  
+  // Validate Blood Group
+  const blood = document.getElementById('r_blood').value;
+  if (!blood) {
+    showError('r_blood', true);
+    isValid = false;
+  }
+  
+  // Validate Aadhar (exactly 12 digits)
+  const aadhar = document.getElementById('r_aadhar').value.trim();
+  const aadharDigits = aadhar.replace(/\D/g, '');
+  if (aadharDigits.length !== 12) {
+    showError('r_aadhar', true);
+    isValid = false;
+  }
+  
+  // Validate Weight
+  const weight = document.getElementById('r_weight').value;
+  if (!weight || parseInt(weight) < 50) {
+    showError('r_weight', true);
+    isValid = false;
+  }
+  
+  // Validate City
+  const city = document.getElementById('r_city').value.trim();
+  if (!city) {
+    showError('r_city', true);
+    isValid = false;
+  }
+  
+  // Validate State
+  const state = document.getElementById('r_state').value.trim();
+  if (!state) {
+    showError('r_state', true);
+    isValid = false;
+  }
+  
+  return isValid;
+}
+
+// Registration steps
+function goStep(n){
+  // Validate step 1 before moving to step 2
+  if (n === 2) {
+    if (!validateStep1()) {
+      return;
+    }
+  }
+  
+  for(let i=1;i<=3;i++){
+    document.getElementById('rp'+i).style.display=i===n?'block':'none';
+    const s=document.getElementById('rs'+i);
+    s.classList.remove('done','active');
+    if(i<n){s.classList.add('done');s.querySelector('.step-num').textContent='✓';}
+    else if(i===n){s.classList.add('active');s.querySelector('.step-num').textContent=i;}
+    else s.querySelector('.step-num').textContent=i;
+  }
+  if(n===3) buildReview();
+}
+
+function togglePill(el){el.classList.toggle('checked');}
+
+function buildReview(){
+  const p=(l,v)=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--gray);">${l}</span><span style="font-weight:700;">${v||'—'}</span></div>`;
+  document.getElementById('reviewPanel').innerHTML =
+    '<div style="font-size:13px;font-weight:800;margin-bottom:10px;color:var(--dark);">Review Details</div>'+
+    p('Name',document.getElementById('r_name').value)+
+    p('Age',document.getElementById('r_age').value)+
+    p('Blood Group',document.getElementById('r_blood').value)+
+    p('Phone',document.getElementById('r_phone').value)+
+    p('City',document.getElementById('r_city').value)+
+    p('Allergies',document.getElementById('r_allergy').value||'None')+
+    p('Last Donation',document.getElementById('r_lastdon').value||'Never');
+     (new Date(r_lastdon.value) > new Date(Date.now() - 90*24*60*60*1000))   
+      document.getElementById('reviewPanel').innerHTML +=
+        '<div style="margin-top:12px;padding:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r);color:#dc2626;font-size:13px;">'+
+        '<i class="bi bi-x-circle-fill"></i> Last donation was less than 90 days ago. You are currently ineligible to donate.'+
+        '</div>';
+      
+    }
+
+// Use the saveDonor function from supabase.js to save data to Supabase
+function submitRegister(){
+    // Check if user has permission to register as donor
+    if (typeof RBAC !== 'undefined' && !RBAC.enforceDonorRegistrationAccess()) {
+        return false;
+    }
+    saveDonor();
+}
+
+// Initial load - show loading message
+document.getElementById('donorCount').textContent = 'Loading donors from database...';
+</script>
+</body>
+</html>
